@@ -9,12 +9,14 @@ namespace waConcessionaria {
 
     public partial class wfCarro : System.Web.UI.Page {
 
+
         protected void Page_Load(object sender, EventArgs e) {
 
             if (IsPostBack) {
                 lbListagemDeMarcas.Text = "";
             }
         }
+
 
         protected void Button1_Click(object sender, EventArgs e) {
 
@@ -32,7 +34,7 @@ namespace waConcessionaria {
 
             switch (ddlMenu.SelectedValue.ToString()) {
                 case "1":
-                    lbListagemDeMarcas.Text = "1 empty!";
+                    listaMarcas(listaDeCarros);
                     break;
                 case "2":
                     listaCarros(listaDeCarros);
@@ -54,6 +56,119 @@ namespace waConcessionaria {
                     break;
             }
         }
+
+
+        public void listaMarcas(List<Carro> listaDeCarros) {
+
+            //Declaracao de objetos
+            Table table;
+            TableHeaderRow header;
+            TableRow row;
+            TableCell cell;
+
+            //Variaveis para o cabecalho
+            string headerMarcaCodigo = "CODIGO";
+            string headerMarcaNome = "MARCA";
+            string headerMarcaPais = "PAÍS";
+            string headerMarcaQtdCarros = "NÚMERO DE CARROS";
+
+            //Tabela
+            table = new Table();
+            table.CellPadding = 5;
+            table.BorderWidth = 2;
+            table.BorderColor = Color.FromArgb(190, 190, 190);
+
+            #region "Table Header"
+            //Cabecalho
+            header = new TableHeaderRow();
+            header.Font.Size = 9;
+            header.ForeColor = Color.FromArgb(55, 55, 55);
+            header.BackColor = Color.FromArgb(190, 190, 190);
+            header.BorderWidth = 1;
+            header.BorderColor = Color.FromArgb(255, 255, 255);
+
+            //Cabecalho - Coluna 1
+            cell = new TableHeaderCell();
+            cell.Text = headerMarcaCodigo;
+            header.Cells.Add(cell);
+
+            //Cabecalho - Coluna 2
+            cell = new TableHeaderCell();
+            cell.Text = headerMarcaNome;
+            header.Cells.Add(cell);
+
+            //Cabecalho - Coluna 3
+            cell = new TableHeaderCell();
+            cell.Text = headerMarcaPais;
+            header.Cells.Add(cell);
+
+            //Cabecalho - Coluna 4
+            cell = new TableHeaderCell();
+            cell.Text = headerMarcaQtdCarros;
+            header.Cells.Add(cell);
+            
+            //Insere o cabecalho à tabela
+            table.Rows.Add(header);
+            #endregion
+
+            #region "Table Rows"
+            List<Marca> listaDeMarcas = new List<Marca>();
+
+            foreach (var item in listaDeCarros) {
+
+                if (!listaDeMarcas.Contains(item.marca)) {
+
+                    listaDeMarcas.Add(item.marca);
+                }
+            }
+
+            for (int i = 0; i < listaDeMarcas.Count; i++) {
+
+                row = new TableRow();
+                int qtdCarros = 0;
+
+                //Linha [i] - Coluna 1
+                cell = new TableCell();
+                cell.Text = listaDeMarcas[i].codigo.ToString();
+                row.Cells.Add(cell);
+                table.Rows.Add(row);
+
+                //Linha [i] - Coluna 2
+                cell = new TableCell();
+                cell.Text = listaDeMarcas[i].nome;
+                row.Cells.Add(cell);
+                table.Rows.Add(row);
+
+                //Linha [i] - Coluna 3
+                cell = new TableCell();
+                cell.Text = listaDeMarcas[i].paisOrigem;
+                row.Cells.Add(cell);
+                table.Rows.Add(row);
+
+                //Linha [i] - Coluna 4
+                cell = new TableCell();
+                foreach (var item in listaDeCarros) {
+                    if (item.marca.codigo.ToString() == listaDeMarcas[i].codigo.ToString()) {
+                        qtdCarros++;
+                    }
+                }
+                cell.Text = qtdCarros.ToString();
+                row.Cells.Add(cell);
+                table.Rows.Add(row);
+
+                //Layout das linhas
+                row.BackColor = Color.FromArgb(230, 230, 230);
+                row.BorderColor = Color.FromArgb(0, 0, 0);
+                row.BorderWidth = 2;
+                row.HorizontalAlign = HorizontalAlign.Center;
+                row.VerticalAlign = VerticalAlign.Middle;
+            }
+            #endregion
+
+            phListagem.Controls.Add(table);
+
+        }
+        
 
         public void listaCarros(List<Carro> listaDeCarros) {
             
@@ -90,36 +205,30 @@ namespace waConcessionaria {
             cell = new TableHeaderCell();
             cell.Text = headerCarMarca;
             header.Cells.Add(cell);
-            header.Cells.Add(cell);
 
             //Cabecalho - Coluna 2
             cell = new TableHeaderCell();
             cell.Text = headerCarCodigo;
-            header.Cells.Add(cell);
             header.Cells.Add(cell);
 
             //Cabecalho - Coluna 3
             cell = new TableHeaderCell();
             cell.Text = headerCarModelo;
             header.Cells.Add(cell);
-            header.Cells.Add(cell);
 
             //Cabecalho - Coluna 4
             cell = new TableHeaderCell();
             cell.Text = headerCarAnoFabricacao;
-            header.Cells.Add(cell);
             header.Cells.Add(cell);
 
             //Cabecalho - Coluna 5
             cell = new TableHeaderCell();
             cell.Text = headerCarPrecoBasico;
             header.Cells.Add(cell);
-            header.Cells.Add(cell);
 
             //Cabecalho - Coluna 6
             cell = new TableHeaderCell();
             cell.Text = headerCarPrecorTotal;
-            header.Cells.Add(cell);
             header.Cells.Add(cell);
 
             //Atribui header à tabela
@@ -179,5 +288,7 @@ namespace waConcessionaria {
             //Joga a tabela na tela
             phListagem.Controls.Add(table);
         }
+
+        
     }
 }
